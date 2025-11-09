@@ -17,49 +17,55 @@ const uri = "mongodb+srv://artify-db:9DcUHT6zVDEodBOK@firstproject.7bzasho.mongo
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    }
 });
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+    res.send('Hello World!')
 })
 
 
 
 async function run() {
-  try {
-    await client.connect();
+    try {
+        await client.connect();
 
-    const db = client.db('artify-db')
-    const artworkCollection = db.collection('artwork')
+        const db = client.db('artify-db')
+        const artworkCollection = db.collection('artwork')
+            // for acces all data
+        app.get('/artwork', async (req, res) => {
+            const result = await artworkCollection.find().toArray()
+            console.log(result);
+            res.send(result)
+        })
 
-    app.get('/artwork', async(req,res)=>{
-        const result = await artworkCollection.find().toArray()
-        console.log(result);
-        
-        res.send(result)
-    })
-
-
-
-
-
-
-
-
+        // TO Access the feautes artwork data
+        app.get('/feauters-artwork', async (req, res) => {
+            const result = await artworkCollection.find().sort({ createdAt: -1 }).limit(6).toArray()
+            console.log(result);
+            res.send(result)
+        })
 
 
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  }
-  
-  finally {
-    await client.close();
-  }
+
+
+
+
+
+
+
+
+        await client.db("admin").command({ ping: 1 });
+        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    }
+
+    finally {
+
+    }
 }
 
 run().catch(console.dir);
@@ -73,5 +79,5 @@ run().catch(console.dir);
 
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+    console.log(`Example app listening on port ${port}`)
 })
