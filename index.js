@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors');
+require('dotenv').config()
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 3000;
@@ -13,7 +14,10 @@ app.use(express.json())
 
 
 
-const uri = "mongodb+srv://artify-db:9DcUHT6zVDEodBOK@firstproject.7bzasho.mongodb.net/?appName=firstProject";
+// const uri = "mongodb+srv://artify-db:9DcUHT6zVDEodBOK@firstproject.7bzasho.mongodb.net/?appName=firstProject";
+
+const uri = `mongodb+srv://${process.env.DB_ARTWORK}:${process.env.DB_PASS}@firstproject.7bzasho.mongodb.net/?appName=firstProject`;
+
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
