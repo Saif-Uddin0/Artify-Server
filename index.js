@@ -58,6 +58,17 @@ async function run() {
         })
 
 
+        // to add data to db
+        app.post('/artwork' , async(req,res)=>{
+            const data = req.body;
+            const result = await artworkCollection.insertOne(data)
+            res.send({
+                success: true,
+                result
+            })
+        })
+
+
 
 
 
