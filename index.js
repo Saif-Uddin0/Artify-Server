@@ -44,6 +44,28 @@ async function run() {
             res.send(result)
         })
 
+        // get artwork by user email 
+        // app.get('/artwork', async (req, res) => {
+        //     const {email}= req.query;
+        //     const query = {email};
+        //     const cursor = artworkCollection.find(query)
+        //     const result = await cursor.toArray()
+        //     res.send(result)
+        // })
+
+
+        // app.get('/artwork', async (req, res) => {
+        //     try {
+        //         const { email } = req.query; // ✅ Get email from query parameter
+        //         const query = email ? { userEmail: email } : {}; // ✅ Filter if email exists
+        //         const result = await artworkCollection.find(query).toArray();
+        //         res.send(result);
+        //     } catch (error) {
+        //         console.error(error);
+        //         res.status(500).send({ message: 'Failed to fetch artworks' });
+        //     }
+        // });
+
         // TO Access the feautes artwork data
         app.get('/feauters-artwork', async (req, res) => {
             const result = await artworkCollection.find().sort({ createdAt: -1 }).limit(6).toArray()
@@ -57,15 +79,10 @@ async function run() {
             res.send(result)
         })
 
-        // get usr email artwork
-        app.get('/artwork', async (req, res) => {
-            const query = {};
-            if (query.userEmail) {
-                query.userEmail = email;
-            }
-            const cursor = artworkCollection.find(query)
-            const result = await cursor.toArray()
-        })
+
+        // single 
+
+
 
         // to add data to db
         app.post('/artwork', async (req, res) => {
@@ -77,7 +94,13 @@ async function run() {
             })
         })
 
-
+        // delete
+        app.delete('/artwork/:id' , async(req , res)=>{
+            const id = req.params.id
+            const query ={_id : new ObjectId(id)}
+            const result = await artworkCollection.deleteOne(query)
+            res.send(result)
+        })
 
 
 
