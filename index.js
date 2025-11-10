@@ -36,30 +36,39 @@ async function run() {
 
         const db = client.db('artify-db')
         const artworkCollection = db.collection('artwork')
-            // for acces all data
+
+
+        // for acces all data
         app.get('/artwork', async (req, res) => {
             const result = await artworkCollection.find().toArray()
-            console.log(result);
             res.send(result)
         })
 
         // TO Access the feautes artwork data
         app.get('/feauters-artwork', async (req, res) => {
             const result = await artworkCollection.find().sort({ createdAt: -1 }).limit(6).toArray()
-            console.log(result);
             res.send(result)
         })
 
         // to access the details page
         app.get('/artwork-details/:id', async (req, res) => {
-            const {id} = req.params
-            const result = await artworkCollection.findOne({_id: new ObjectId(id)})
+            const { id } = req.params
+            const result = await artworkCollection.findOne({ _id: new ObjectId(id) })
             res.send(result)
         })
 
+        // get usr email artwork
+        app.get('/artwork', async (req, res) => {
+            const query = {};
+            if (query.userEmail) {
+                query.userEmail = email;
+            }
+            const cursor = artworkCollection.find(query)
+            const result = await cursor.toArray()
+        })
 
         // to add data to db
-        app.post('/artwork' , async(req,res)=>{
+        app.post('/artwork', async (req, res) => {
             const data = req.body;
             const result = await artworkCollection.insertOne(data)
             res.send({
