@@ -40,6 +40,52 @@ async function run() {
 
         const db = client.db('artify-db')
         const artworkCollection = db.collection('artwork')
+        const favouriteCollection = db.collection('favourite')
+
+
+
+
+         // -------------------------------favourite section-----------------
+
+
+        // get favorite
+        app.get('/favourite', async (req, res) => {
+            const result = await favouriteCollection.find().toArray();
+            res.send(result)
+        })
+
+        // get already  exists favourite or not
+        app.get('/favourite/check', async(req,res)=>{
+            const {userEmail, artworkId} = req.query;
+            const isExists = await favouriteCollection.findOne({userEmail , artworkId});
+            res.send({isExists: !!isExists})
+        })
+
+        // post favourite
+        app.post('/favourite' , async(req,res)=>{
+            const data = req.body;
+            const existing = await favouriteCollection.findOne({
+                artworkId: data.artworkId,
+                userEmail: data.userEmail
+            })
+            if(existing){
+                return res.send({
+                    success: false,
+                    message: 'Already added to favourite'
+                })
+            }
+            const result = await favouriteCollection.insertOne(data)
+            res.send({
+                success: true,
+                result
+            })
+        })
+
+
+
+
+        
+// --------------------------artwork related---------------------
 
 
         // for acces all data
@@ -60,8 +106,8 @@ async function run() {
 
         // app.get('/artwork', async (req, res) => {
         //     try {
-        //         const { email } = req.query; // ✅ Get email from query parameter
-        //         const query = email ? { userEmail: email } : {}; // ✅ Filter if email exists
+        //         const { email } = req.query; // 
+        //         const query = email ? { userEmail: email } : {}; 
         //         const result = await artworkCollection.find(query).toArray();
         //         res.send(result);
         //     } catch (error) {
@@ -84,7 +130,7 @@ async function run() {
         })
 
 
-        // single 
+        
 
 
 
@@ -99,14 +145,27 @@ async function run() {
         })
 
         // delete
-        app.delete('/artwork/:id' , async(req , res)=>{
+        app.delete('/artwork/:id', async (req, res) => {
             const id = req.params.id
-            const query ={_id : new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
             const result = await artworkCollection.deleteOne(query)
             res.send(result)
         })
 
 
+        // art update
+        app.put('/artwork/:id', async (req, res) => {
+            const id = req.params.id
+            const data = req.body
+            const objectId = new ObjectId(id)
+            const filter = { _id: objectId }
+            const update = {
+                $set: data
+            }
+            const result = await artworkCollection.updateOne(filter, update)
+            res.send(result)
+        })
+       
 
 
 
