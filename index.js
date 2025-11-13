@@ -82,9 +82,24 @@ async function run() {
         })
 
 
+        app.delete('/favourite/:id', async(req,res)=>{
+            const id = req.params.id
+            const query ={_id: new ObjectId(id)}
+            const result = await favouriteCollection.deleteOne(query)
+            res.send(result)
+        })
+
+        // app.delete('/artwork/:id', async (req, res) => {
+        //     const id = req.params.id
+        //     const query = { _id: new ObjectId(id) }
+        //     const result = await artworkCollection.deleteOne(query)
+        //     res.send(result)
+        // })
 
 
-        
+
+
+
 // --------------------------artwork related---------------------
 
 
@@ -166,6 +181,26 @@ async function run() {
             res.send(result)
         })
        
+
+
+        // ---------like realted -----------
+        app.patch('/artwork/:id/like' , async(req, res)=>{
+            const id = req.params.id;
+            const userEmail = req.body.userEmail
+            const query = {_id: new ObjectId(id)}
+            // const artwork = await artworkCollection.findOne(query)
+            // if(artwork.likedUsers && artwork.likedUsers.includes(userEmail)){
+            //     return res.send({ success: false, message: "Already liked!" });
+            // }
+            const update ={
+                $inc: {likes:1},
+                $push: {likedUsers: userEmail}
+            }
+            const result = await artworkCollection.updateOne(query,update)
+            res.send({
+                success: true
+            })
+        }) 
 
 
 
