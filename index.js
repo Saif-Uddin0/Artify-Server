@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
 
 async function run() {
     try {
-        await client.connect();
+        // await client.connect();
 
         const db = client.db('artify-db')
         const artworkCollection = db.collection('artwork')
@@ -188,10 +188,10 @@ async function run() {
             const id = req.params.id;
             const userEmail = req.body.userEmail
             const query = {_id: new ObjectId(id)}
-            // const artwork = await artworkCollection.findOne(query)
-            // if(artwork.likedUsers && artwork.likedUsers.includes(userEmail)){
-            //     return res.send({ success: false, message: "Already liked!" });
-            // }
+            const artwork = await artworkCollection.findOne(query)
+            if(artwork.likedUsers && artwork.likedUsers.includes(userEmail)){
+                res.send({ success: false, message: "Already liked!" });
+            }
             const update ={
                 $inc: {likes:1},
                 $push: {likedUsers: userEmail}
@@ -208,7 +208,7 @@ async function run() {
 
 
 
-        await client.db("admin").command({ ping: 1 });
+        // await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     }
 
