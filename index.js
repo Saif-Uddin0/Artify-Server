@@ -190,7 +190,7 @@ async function run() {
             const query = {_id: new ObjectId(id)}
             const artwork = await artworkCollection.findOne(query)
             if(artwork.likedUsers && artwork.likedUsers.includes(userEmail)){
-                res.send({ success: false, message: "Already liked!" });
+                res.send({ success: false, message: "You Already Liked This!" });
             }
             const update ={
                 $inc: {likes:1},
