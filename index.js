@@ -170,7 +170,7 @@ async function run() {
 
         // art update
         app.put('/artwork/:id', async (req, res) => {
-            const id = req.params.id
+            const id = req.params.id;
             const data = req.body
             const objectId = new ObjectId(id)
             const filter = { _id: objectId }
@@ -183,7 +183,7 @@ async function run() {
        
 
 
-        // ---------like realted -----------
+        // ---------like realted ----------
         app.patch('/artwork/:id/like' , async(req, res)=>{
             const id = req.params.id;
             const userEmail = req.body.userEmail
@@ -198,7 +198,7 @@ async function run() {
             }
             const result = await artworkCollection.updateOne(query,update)
             res.send({
-                success: true
+                success: true,
             })
         }) 
 
